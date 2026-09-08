@@ -1,26 +1,100 @@
-# Публикация в npm по тегу. Токенов здесь нет: npm доверяет этому
-# workflow по OIDC (Trusted Publishing), поэтому и секрет не нужен,
-# и одноразовый код 2FA не спрашивается.
-name: release
+# Выпуск в npm по метке версии. Публикует доверенный издатель (OIDC): npm сам
+# удостоверяет, что запрос пришёл из этого репозитория и из этого файла.
+#
+# ЗАЧЕМ ИМЕННО ТАК. Публикация с машины требует либо долгоживущего токена, либо
+# второго фактора. Токен утекает. Второй фактор привязан к одному устройству:
+# сломался ноутбук — выпуск встал. Здесь не хранится ни токена, ни ключа: право
+# публиковать выдаётся на один прогон и только этому файлу.
+#
+# КАК ВЫПУСКАТЬ: поднять version в package.json, записать раздел в CHANGELOG.md,
+#   git tag v0.1.1 && git push origin v0.1.1
+# Метка обязана совпасть с version — иначе прогон остановится до публикации.
+
+name: выпуск
 
 on:
   push:
     tags: ["v*"]
 
+permissions:
+  contents: read
+
 jobs:
   publish:
     runs-on: ubuntu-latest
+    # id-token нужен только здесь: им npm удостоверяет происхождение запроса.
     permissions:
       contents: read
-      # Без этого OIDC-токен не выдаётся, и npm не признаёт издателя.
       id-token: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
       - uses: actions/setup-node@v4
         with:
-          node-version: 24
-          registry-url: https://registry.npmjs.org
-      # Trusted Publishing появился в npm 11.5; в образе версия может
-      # быть старше, поэтому берём свежий явно.
-      - run: npm install -g npm@latest
-      - run: npm publish --access public
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+
+      # Доверенный издатель поддержан с npm 11.5.1; на образе лежит версия старше.
+      # Закреплено на 11: `npm@latest` — уже 12.x с другими умолчаниями установки,
+      # и выпуск не то место, где выясняют совместимость с новой мажорной версией.
+      - name: npm посвежее
+        run: npm install -g npm@11
+
+      # Метка и version — главный источник путаницы: опубликовать 0.1.1 под меткой
+      # v0.1.2 можно ровно один раз, дальше версия занята навсегда.
+      - name: метка совпадает с версией
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          PKG=$(node -p "require('./package.json').version")
+          if [ "$TAG" != "$PKG" ]; then
+            echo "метка v$TAG, а в package.json $PKG — выпуск остановлен"
+            exit 1
+          fi
+          echo "версия $PKG"
+
+      # Уезжает только то, что проходит собственные проверки. Версия 0.1.0 уехала
+      # без них и оказалась нерабочей в браузере — второй раз этого не будет.
+      - run: npm test
+
+      # --provenance прикладывает удостоверение происхождения: на странице npm
+      # видно, из какого коммита и прогона собран пакет.
+      - name: публикация
+        run: npm publish --provenance --access public
+
+  # Отдельным заданием ради прав: релиз требует contents: write, а давать право
+  # записи заданию, которое публикует пакет, незачем.
+  #
+  # ЗАЧЕМ ВООБЩЕ. Метка без релиза выглядит снаружи существующей версией, которой
+  # нет. Пока релиз делают руками, так и будет.
+  release:
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      # Заметки к релизу — раздел этой версии из журнала изменений. Второй текст
+      # «что нового» рядом с первым однажды разойдётся с ним.
+      - name: заметки из журнала изменений
+        run: |
+          V="${GITHUB_REF_NAME#v}"
+          awk -v v="$V" '
+            $0 ~ "^## " v "$" { on = 1; next }
+            on && /^## /      { exit }
+            on                { print }
+          ' CHANGELOG.md > RELEASE_NOTES.md
+          if [ ! -s RELEASE_NOTES.md ]; then
+            echo "в CHANGELOG.md нет раздела для версии $V — релиз без заметок не создаём"
+            exit 1
+          fi
+          printf '\n```bash\nnpm i -D agent-ui-kit\n```\n' >> RELEASE_NOTES.md
+
+      - name: релиз на GitHub
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes-file RELEASE_NOTES.md
