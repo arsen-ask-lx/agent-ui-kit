@@ -1,0 +1,93 @@
+# vite-plugin-aim
+
+**Point at an element in your running app, say what is wrong — the note lands
+in a file your coding agent reads.**
+
+Between "this button here" and `Rail.tsx:69` somebody has to build a bridge.
+Without one, every conversation about the UI is made of prose descriptions,
+and prose is read two ways.
+
+```bash
+npm i -D vite-plugin-aim
+```
+
+```js
+// vite.config.js
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { aim } from "vite-plugin-aim";
+
+export default defineConfig({
+  plugins: [react(), aim()],
+});
+```
+
+That is the whole installation. Hold **Alt** — the element under the cursor
+lights up. Click — a field opens. Type, press **Enter**.
+
+```markdown
+## the channel list slides under the profile instead of scrolling
+
+- **where:** `ChatScreen › Rail › RoomList › SidebarSection`
+- **what:** `<button>` — «Channels»
+- **classes:** `flex min-w-0 flex-1 items-center gap-1 rounded px-2.5 py-1 …`
+- **page:** `/c/01a0814d-3bd0-708e-bed0-b1be60d2bbee`
+- **when:** 2026-09-08 18:20:30
+```
+
+Then you say to your agent: *"work through NOTES.md"*. The component chain
+plus the class list is enough to find the source line with a single search.
+
+## Why it is a file and not an MCP server
+
+An MCP server would mean either the agent polling for notes or another daemon
+to keep running. A file needs neither: the agent reads it when it looks, and
+**any** agent can — Claude Code, Cursor, Codex, Copilot, or a human with
+`git diff`. Nothing here is tied to one vendor.
+
+You walk the screen and leave ten notes in a row; nobody should wait while
+each one is processed. The file collects, the agent works through the list
+afterwards.
+
+## Options
+
+```js
+aim({
+  file: "NOTES.md",   // where notes are collected
+  key: "alt",         // "alt" | "ctrl" | "meta"
+  color: "#e5484d",   // highlight colour
+  placeholder: "what is wrong? Enter — save, Esc — cancel",
+  route: "/__aim",    // change only on a collision
+})
+```
+
+## What it reads off the element
+
+- **the component chain** — pulled from React's own fibers on the DOM node
+  (`ChatScreen › Rail › RoomList`). React only, and only in dev;
+- **tag, classes, `id`, `data-testid`, a little text** — for everything else
+  and for every other framework.
+
+If no component names are found the note is still recorded, with the tag, the
+classes and the text. Tooling that dies together with somebody else's
+undocumented detail is worse than no tooling at all.
+
+## Dev only
+
+The plugin declares `apply: "serve"`. The client is injected by the dev
+server as a virtual module, so there is nothing to import in your source and
+nothing to remember to strip from a production build.
+
+## Three things learned the hard way
+
+They are in the source as comments, and they are why this is a package rather
+than a snippet:
+
+- **no `prompt()` / `confirm()`** — a native dialog freezes the page and
+  breaks any automation driving the browser from outside;
+- **the modifier-click belongs to the plugin entirely** — otherwise a note
+  about a button also presses that button;
+- **the field closes on click-outside, not on blur** — `blur` fires before
+  Enter gets a chance to run, and ate what was typed.
+
+MIT.

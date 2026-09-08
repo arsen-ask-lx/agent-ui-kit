@@ -1,0 +1,18 @@
+{
+  "name": "vite-plugin-aim",
+  "version": "0.1.0",
+  "description": "Point at an element in your running app, say what is wrong — the note lands in a file your coding agent reads.",
+  "keywords": ["vite-plugin", "ai", "agent", "feedback", "annotate", "claude", "cursor", "devtools"],
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.js"
+    }
+  },
+  "files": ["src"],
+  "engines": { "node": ">=20" },
+  "peerDependencies": { "vite": ">=5" },
+  "repository": { "type": "git", "url": "git+https://github.com/arsen-ask-lx/vite-plugin-aim.git" }
+}
