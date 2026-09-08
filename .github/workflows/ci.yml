@@ -1,0 +1,27 @@
+# Проверки на каждый толчок и заявку. Зависимостей у пакета нет, поэтому
+# ставить нечего — только прогнать тесты на версиях, которые обещает
+# `engines`.
+name: checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node: [20, 22, 24]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm test
+      # Пакет ставят из архива, а не из репозитория: проверяем, что в архив
+      # попадает то, что нужно для работы, и ничего лишнего.
+      - run: npm pack --dry-run

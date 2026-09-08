@@ -95,7 +95,11 @@ export function agentUiKit(options = {}) {
         placeholder: settings.placeholder,
         route: settings.route,
       };
-      return source.replace("__AGENT_UI_KIT_OPTIONS__", JSON.stringify(runtime));
+      // ⚠️ replaceAll, NOT replace. A single replace hits the first
+      // occurrence only — which was the comment above the declaration —
+      // and left the constant itself an undefined name, so the client
+      // threw a ReferenceError before the first click.
+      return source.replaceAll("__AGENT_UI_KIT_OPTIONS__", JSON.stringify(runtime));
     },
 
     // ⚠️ INJECTED BY THE PLUGIN, NOT IMPORTED BY THE HOST. One line in the

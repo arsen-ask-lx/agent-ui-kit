@@ -17,7 +17,7 @@
  * exactly the audience this tool serves.
  */
 
-/* global __AGENT_UI_KIT_OPTIONS__ */
+// Substituted by the plugin when it serves this module — see load().
 const OPTIONS = __AGENT_UI_KIT_OPTIONS__;
 
 /**

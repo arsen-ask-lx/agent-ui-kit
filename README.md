@@ -1,5 +1,10 @@
 # agent-ui-kit
 
+[![npm](https://img.shields.io/npm/v/agent-ui-kit)](https://www.npmjs.com/package/agent-ui-kit)
+[![checks](https://github.com/arsen-ask-lx/agent-ui-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/arsen-ask-lx/agent-ui-kit/actions/workflows/ci.yml)
+[![MIT licence](https://img.shields.io/npm/l/agent-ui-kit)](LICENSE)
+[![zero dependencies](https://img.shields.io/badge/dependencies-0-2ea44f)](package.json)
+
 **Point at an element in your running app, say what is wrong — the note lands
 in a file your coding agent reads.**
 
