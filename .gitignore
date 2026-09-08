@@ -1,3 +1,5 @@
 node_modules
 *.log
+
+# Пишет пример при ручной проверке
 NOTES.md

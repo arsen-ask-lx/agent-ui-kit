@@ -38,6 +38,13 @@
     "url": "https://github.com/arsen-ask-lx/agent-ui-kit/issues"
   },
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "example": "vite --config example/vite.config.js example"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "vite": "^7.0.0"
   }
 }

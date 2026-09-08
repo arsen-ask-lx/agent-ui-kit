@@ -1,5 +1,7 @@
 # agent-ui-kit
 
+**English** · [Русский](README.ru.md)
+
 [![npm](https://img.shields.io/npm/v/agent-ui-kit)](https://www.npmjs.com/package/agent-ui-kit)
 [![checks](https://github.com/arsen-ask-lx/agent-ui-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/arsen-ask-lx/agent-ui-kit/actions/workflows/ci.yml)
 [![MIT licence](https://img.shields.io/npm/l/agent-ui-kit)](LICENSE)
@@ -7,6 +9,8 @@
 
 **Point at an element in your running app, say what is wrong — the note lands
 in a file your coding agent reads.**
+
+![Alt-click an element, type what is wrong, press Enter](https://raw.githubusercontent.com/arsen-ask-lx/agent-ui-kit/main/docs/demo.gif)
 
 Between "this button here" and `Rail.tsx:69` somebody has to build a bridge.
 Without one, every conversation about the UI is made of prose descriptions,
@@ -32,6 +36,13 @@ export default defineConfig({
 
 That is the whole installation. Hold **Alt** — the element under the cursor
 lights up. Click — a field opens. Type, press **Enter**.
+
+Want to see it before installing anything? Clone and run the example:
+
+```bash
+git clone https://github.com/arsen-ask-lx/agent-ui-kit && cd agent-ui-kit
+npm install && npm run example
+```
 
 ```markdown
 ## the channel list slides under the profile instead of scrolling
