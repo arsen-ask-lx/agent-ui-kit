@@ -1,0 +1,26 @@
+# Публикация в npm по тегу. Токенов здесь нет: npm доверяет этому
+# workflow по OIDC (Trusted Publishing), поэтому и секрет не нужен,
+# и одноразовый код 2FA не спрашивается.
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # Без этого OIDC-токен не выдаётся, и npm не признаёт издателя.
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      # Trusted Publishing появился в npm 11.5; в образе версия может
+      # быть старше, поэтому берём свежий явно.
+      - run: npm install -g npm@latest
+      - run: npm publish --access public
