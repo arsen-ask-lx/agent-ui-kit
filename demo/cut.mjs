@@ -18,7 +18,7 @@ await Recast.from(trace)
   // Подписи собираются из narrate() в сценарии; наезд опирается на их
   // разметку времени, поэтому идёт после них.
   .subtitlesFromTrace()
-  .autoZoom({ inputLevel: 1.7, clickLevel: 1.5 })
+  .autoZoom({ inputLevel: 1.33, clickLevel: 1.33 })
   .cursorOverlay()
   .clickEffect()
   .render({ format: "mp4", resolution: "1080p", burnSubtitles: false })
@@ -30,11 +30,11 @@ const io_list = (name, text) => writeFileSync(`${out}/${name}`, text);
 // Крупно, с плотной подложкой: ролик смотрят в ленте, мелкий шрифт там не
 // читается, а прозрачная надпись тонет в светлых кадрах.
 const style =
-  "FontName=Segoe UI,FontSize=22,PrimaryColour=&H00FFFFFF,BackColour=&H99000000," +
+  "FontName=Segoe UI,FontSize=26,PrimaryColour=&H00FFFFFF,BackColour=&H99000000," +
   "BorderStyle=4,Outline=0,Shadow=0,MarginV=40,Bold=1";
 
 ff(["-y", "-i", "raw.mp4", "-vf", `subtitles=raw.srt:force_style='${style}'`,
-    "-c:v", "libx264", "-preset", "slow", "-crf", "22", "-pix_fmt", "yuv420p", "demo.mp4"]);
+    "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p", "demo.mp4"]);
 
 // Гифка для README — не весь ролик, а два куска: первая заметка и файл,
 // в который она легла. Целиком это девять мегабайт: столько README грузится

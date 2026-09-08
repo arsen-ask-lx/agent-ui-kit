@@ -17,7 +17,7 @@ setupRecast(test);
 const NOTES = "../NOTES.md";
 
 /** Одна заметка: подвести курсор с Alt, кликнуть, набрать, отправить. */
-async function note(page, locator, text: string, level = 2.0) {
+async function note(page, locator, text: string, level = 1.33) {
   // ⚠️ СНАЧАЛА ПОДВЕСТИ В ВИДИМУЮ ЧАСТЬ. boundingBox отдаёт координаты
   // относительно страницы: для элемента ниже сгиба клик уходит мимо окна и
   // попадает в <html> — заметка записывается, но про пустоту.
@@ -59,7 +59,7 @@ test("agent-ui-kit in half a minute", async ({ page }) => {
     page,
     page.locator(".order-row", { hasText: "Edsger Dijkstra" }).locator(".pill"),
     "a failed payment needs a retry button right here in the row",
-    2.2,
+    1.33,
   );
 
   await narrate("And a third, on the other side of the screen.");
@@ -67,18 +67,20 @@ test("agent-ui-kit in half a minute", async ({ page }) => {
     page,
     page.locator(".nav-item", { hasText: "Invoices" }).locator(".nav-badge"),
     "this badge keeps counting invoices that were already paid",
-    2.4,
+    1.33,
   );
 
   await narrate("Three notes in twenty seconds. This is the file they landed in.");
   // Показ настоящего файла: он читается с диска сразу после прогона, а не
   // рисуется. Ролик не может показать то, чего плагин не записал.
+  // ⚠️ КРУПНО. Окно съёмки — 2560 пикселей в ширину; при обычном размере
+  // текста файл на кадре не читается, а он здесь главное.
   const notes = readFileSync(NOTES, "utf8").trim();
   await page.setContent(`
     <style>
-      body { margin:0; background:#0d0d0f; color:#ececef; font:15px/1.6 ui-monospace,"Cascadia Mono",monospace; }
-      .head { padding:12px 20px; border-bottom:1px solid #27272d; color:#8f8f99; font-size:13px; }
-      pre { margin:0; padding:18px 22px; white-space:pre-wrap; font:inherit; }
+      body { margin:0; background:#0d0d0f; color:#ececef; font:30px/1.65 ui-monospace,"Cascadia Mono",monospace; }
+      .head { padding:22px 40px; border-bottom:1px solid #27272d; color:#8f8f99; font-size:26px; }
+      pre { margin:0; padding:34px 44px; white-space:pre-wrap; font:inherit; }
       .k { color:#e5484d; } .b { color:#fff; font-weight:700; }
     </style>
     <div class="head">NOTES.md</div>
