@@ -1,6 +1,6 @@
 import type { Plugin } from "vite";
 
-export interface AimOptions {
+export interface AgentUiKitOptions {
   /** Where notes are collected. Default: `NOTES.md` in the project root. */
   file?: string;
   /** Which key to hold while pointing. Default: `alt`. */
@@ -13,5 +13,5 @@ export interface AimOptions {
   route?: string;
 }
 
-export function aim(options?: AimOptions): Plugin;
-export default aim;
+export function agentUiKit(options?: AgentUiKitOptions): Plugin;
+export default agentUiKit;

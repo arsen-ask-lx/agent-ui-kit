@@ -1,5 +1,5 @@
 /**
- * Browser side of vite-plugin-aim.
+ * Browser side of agent-ui-kit.
  *
  * Hold the modifier key — the element under the cursor lights up.
  * Click — a small field opens. Type, press Enter — the note is appended
@@ -17,8 +17,8 @@
  * exactly the audience this tool serves.
  */
 
-/* global __AIM_OPTIONS__ */
-const OPTIONS = __AIM_OPTIONS__;
+/* global __AGENT_UI_KIT_OPTIONS__ */
+const OPTIONS = __AGENT_UI_KIT_OPTIONS__;
 
 /**
  * Whose node is this — the chain of framework components, read off the
@@ -177,7 +177,7 @@ function ask(node) {
  * The mark lives on `window`, not in the module: after a reload the module
  * is new and so are its variables. Only what lives outside survives.
  */
-const ONCE = "__aimStarted";
+const ONCE = "__agentUiKitStarted";
 
 function held(event) {
   return OPTIONS.key === "alt"
@@ -236,7 +236,7 @@ function start() {
         clear();
         if (!text) return;
 
-        const note = { text, aim: ownersOf(node), url: location.pathname, ...describe(node) };
+        const note = { text, where: ownersOf(node), url: location.pathname, ...describe(node) };
         try {
           const answer = await fetch(OPTIONS.route, {
             method: "POST",
@@ -245,17 +245,17 @@ function start() {
           });
           // Say it out loud on success too: silence is indistinguishable
           // from loss, and loss is precisely what we already missed once.
-          if (answer.ok) console.info(`[aim] noted: ${text} → ${note.aim ?? note.tag}`);
-          else console.warn(`[aim] not saved: server answered ${answer.status}`);
+          if (answer.ok) console.info(`[agent-ui-kit] noted: ${text} → ${note.where ?? note.tag}`);
+          else console.warn(`[agent-ui-kit] not saved: server answered ${answer.status}`);
         } catch {
-          console.warn("[aim] not sent: the dev server did not answer");
+          console.warn("[agent-ui-kit] not sent: the dev server did not answer");
         }
       })();
     },
     true,
   );
 
-  console.info(`[aim] on — hold ${OPTIONS.key} to highlight, ${OPTIONS.key}+click to leave a note`);
+  console.info(`[agent-ui-kit] on — hold ${OPTIONS.key} to highlight, ${OPTIONS.key}+click to leave a note`);
 }
 
 start();

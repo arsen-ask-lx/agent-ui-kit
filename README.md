@@ -1,4 +1,4 @@
-# vite-plugin-aim
+# agent-ui-kit
 
 **Point at an element in your running app, say what is wrong — the note lands
 in a file your coding agent reads.**
@@ -7,18 +7,21 @@ Between "this button here" and `Rail.tsx:69` somebody has to build a bridge.
 Without one, every conversation about the UI is made of prose descriptions,
 and prose is read two ways.
 
+It is a Vite plugin: it lives in the dev server and there is
+nothing to import in your source.
+
 ```bash
-npm i -D vite-plugin-aim
+npm i -D agent-ui-kit
 ```
 
 ```js
 // vite.config.js
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { aim } from "vite-plugin-aim";
+import { agentUiKit } from "agent-ui-kit";
 
 export default defineConfig({
-  plugins: [react(), aim()],
+  plugins: [react(), agentUiKit()],
 });
 ```
 
@@ -52,12 +55,12 @@ afterwards.
 ## Options
 
 ```js
-aim({
+agentUiKit({
   file: "NOTES.md",   // where notes are collected
   key: "alt",         // "alt" | "ctrl" | "meta"
   color: "#e5484d",   // highlight colour
   placeholder: "what is wrong? Enter — save, Esc — cancel",
-  route: "/__aim",    // change only on a collision
+  route: "/__agent-ui-kit",  // change only on a collision
 })
 ```
 

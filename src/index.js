@@ -3,7 +3,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 /**
- * vite-plugin-aim — point at an element, say what is wrong, the note lands
+ * agent-ui-kit — point at an element, say what is wrong, the note lands
  * in a file your coding agent reads.
  *
  * WHY A FILE AND NOT A CONSOLE LINE. You walk the screen and leave ten notes
@@ -19,7 +19,7 @@ import { fileURLToPath } from "node:url";
  * middleware.
  */
 
-const CLIENT = "\0virtual:vite-plugin-aim/client";
+const CLIENT = "\0virtual:agent-ui-kit/client";
 
 const DEFAULTS = {
   /** Where notes are collected. Markdown: read by a human and by an agent. */
@@ -31,7 +31,7 @@ const DEFAULTS = {
   /** Placeholder in the note field. */
   placeholder: "what is wrong? Enter — save, Esc — cancel",
   /** Where the browser posts notes. Change only on a collision. */
-  route: "/__aim",
+  route: "/__agent-ui-kit",
 };
 
 /**
@@ -44,7 +44,7 @@ const DEFAULTS = {
  */
 function entry(note) {
   const when = new Date().toISOString().replace("T", " ").slice(0, 19);
-  const where = note.aim || "component not identified";
+  const where = note.where || "component not identified";
   const what = `\`<${note.tag}>\`${note.sample ? ` — «${note.sample}»` : ""}`;
   return [
     ``,
@@ -72,12 +72,12 @@ async function readBody(request) {
 /**
  * @param {Partial<typeof DEFAULTS>} [options]
  */
-export function aim(options = {}) {
+export function agentUiKit(options = {}) {
   const settings = { ...DEFAULTS, ...options };
   const notes = resolve(process.cwd(), settings.file);
 
   return {
-    name: "vite-plugin-aim",
+    name: "agent-ui-kit",
     apply: "serve",
 
     // The client is a virtual module: nothing to copy into the host project,
@@ -95,7 +95,7 @@ export function aim(options = {}) {
         placeholder: settings.placeholder,
         route: settings.route,
       };
-      return source.replace("__AIM_OPTIONS__", JSON.stringify(runtime));
+      return source.replace("__AGENT_UI_KIT_OPTIONS__", JSON.stringify(runtime));
     },
 
     // ⚠️ INJECTED BY THE PLUGIN, NOT IMPORTED BY THE HOST. One line in the
@@ -125,13 +125,13 @@ export function aim(options = {}) {
             await appendFile(notes, entry(note), "utf8");
             // Say it in the dev-server log too: the person sees the note did
             // not fly off into nowhere without opening the file.
-            server.config.logger.info(`[aim] ${note.text} → ${note.aim || note.tag}`);
+            server.config.logger.info(`[agent-ui-kit] ${note.text} → ${note.where || note.tag}`);
             response.statusCode = 204;
             response.end();
           } catch (error) {
             // Not swallowed: a note that failed to save must say so, or the
             // person will believe it was taken into account.
-            server.config.logger.error(`[aim] not saved: ${String(error)}`);
+            server.config.logger.error(`[agent-ui-kit] not saved: ${String(error)}`);
             response.statusCode = 500;
             response.end();
           }
@@ -141,4 +141,4 @@ export function aim(options = {}) {
   };
 }
 
-export default aim;
+export default agentUiKit;
