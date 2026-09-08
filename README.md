@@ -12,7 +12,7 @@ in a file your coding agent reads.**
 
 ![Alt-click an element, type what is wrong, press Enter](https://raw.githubusercontent.com/arsen-ask-lx/agent-ui-kit/main/docs/demo.gif)
 
-*<a href="https://github.com/arsen-ask-lx/agent-ui-kit/raw/main/docs/demo.mp4">The same thing at full size, in video</a> — recorded from the example in this repository, not staged.*
+*<a href="https://github.com/arsen-ask-lx/agent-ui-kit/raw/main/docs/demo.mp4">The full run, in video</a> — three notes across one screen, then the file they landed in. Recorded from the example in this repository; nothing is staged.*
 
 Between "this button here" and `Rail.tsx:69` somebody has to build a bridge.
 Without one, every conversation about the UI is made of prose descriptions,

@@ -12,7 +12,7 @@
 
 ![Alt + клик по элементу, текст, Enter](https://raw.githubusercontent.com/arsen-ask-lx/agent-ui-kit/main/docs/demo.gif)
 
-*<a href="https://github.com/arsen-ask-lx/agent-ui-kit/raw/main/docs/demo.mp4">То же самое крупно, видео</a> — снято с примера из этого репозитория, не постановка.*
+*<a href="https://github.com/arsen-ask-lx/agent-ui-kit/raw/main/docs/demo.mp4">Полный прогон, видео</a> — три заметки по одному экрану и файл, в который они легли. Снято с примера из этого репозитория, без постановки.*
 
 Между «вот эта кнопка» и `Rail.tsx:69` кто-то должен построить мост. Без него
 любой разговор об интерфейсе состоит из описаний словами, а слова читаются

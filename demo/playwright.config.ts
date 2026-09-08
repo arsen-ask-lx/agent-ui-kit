@@ -6,6 +6,10 @@ export default defineConfig({
   testDir: ".",
   workers: 1,
   retries: 0,
+  // Ролик идёт около минуты, и это не признак зависания: стандартные
+  // тридцать секунд рассчитаны на проверку, а здесь съёмка с паузами
+  // на прочтение подписей.
+  timeout: 180_000,
   use: {
     baseURL: "http://localhost:5177",
     viewport: { width: 1280, height: 720 },
